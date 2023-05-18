@@ -5,16 +5,20 @@
 
 using namespace std;
 
+/*
+	luogu p3366 (æ¨¡æ¿)æœ€å°ç”Ÿæˆæ ‘
+	https://www.luogu.com.cn/problem/P3366
+*/
 
 class Kruskal {
 private:
 	/*
-		´æ·ÅÎŞÏò±ß,¶Ôcost½øĞĞÅÅĞò
+		å­˜æ”¾æ— å‘è¾¹,å¯¹costè¿›è¡Œæ’åº
 	*/
 	struct Edge {
-		int u;													//×ó¶Ëµã
-		int v;													//ÓÒ¶Ëµã
-		int cost;												//ÏûºÄÖµ
+		int u;													//å·¦ç«¯ç‚¹
+		int v;													//å³ç«¯ç‚¹
+		int cost;												//æ¶ˆè€—å€¼
 		Edge(int u, int v, int cost) : u(u), v(v), cost(cost) {}
 		Edge() :u(0), v(0), cost(0) {}
 		bool operator > (const Edge b) const {
@@ -24,12 +28,12 @@ private:
 			return cost < b.cost;
 		}
 	};
-	int n;														//µãµÄÊıÁ¿
-	vector <int> father;										//×æ¸¸Ä¸
-	vector<Edge> edge;											//´æ·Å±ß
+	int n;														//ç‚¹çš„æ•°é‡
+	vector <int> father;										//ç¥–çˆ¶æ¯
+	vector<Edge> edge;											//å­˜æ”¾è¾¹
 public:
 
-	//³õÊ¼»¯Ò»¹²ÓµÓĞ¶àÉÙµã Óë ÓµÓĞ¶àÉÙ±ß
+	//åˆå§‹åŒ–ä¸€å…±æ‹¥æœ‰å¤šå°‘ç‚¹ ä¸ æ‹¥æœ‰å¤šå°‘è¾¹
 	Kruskal(int x, int e) {
 		n = x;
 		father.resize(n + 1);
@@ -37,19 +41,19 @@ public:
 	}
 
 	/*
-		Ìí¼Ó±ß
+		æ·»åŠ è¾¹
 	*/
 	void add_edge(int u, int v, int cost) {
 		edge.push_back({ u , v , cost });
 	}
 
 	/*
-		Ñ°ÕÒ¶ÔÓ¦½ÚµãµÄ×æÏÈ
+		å¯»æ‰¾å¯¹åº”èŠ‚ç‚¹çš„ç¥–å…ˆ
 	*/
 	int findfather(int x) {
 		int a = x;
 		while (x != father[x]) x = father[x];
-		//Â·¾¶Ñ¹Ëõ
+		//è·¯å¾„å‹ç¼©
 		while (a != x) {
 			int z = a;
 			a = father[a];
@@ -61,17 +65,17 @@ public:
 	int kruskal() {
 		int mark = 0;
 		int res = 0;
-		for (int i = 1; i <= n; i++)father[i] = i;					//³õÊ¼»¯Ã¿¸ö½ÚµãµÄ×æ¸¸Ä¸Îª±¾Éí
-		sort(edge.begin(), edge.end());								//¶Ô±ßÈ¨½øĞĞÅÅĞò
+		for (int i = 1; i <= n; i++)father[i] = i;					//åˆå§‹åŒ–æ¯ä¸ªèŠ‚ç‚¹çš„ç¥–çˆ¶æ¯ä¸ºæœ¬èº«
+		sort(edge.begin(), edge.end());								//å¯¹è¾¹æƒè¿›è¡Œæ’åº
 		for (Edge i : edge) {
 			int u = i.u, v = i.v;
-			int fu = findfather(u);									//È·ÈÏ×ó¶ËµãµÄ×æ¸¸Ä¸
-			int fv = findfather(v);									//È·ÈÏÓÒ¶ËµãµÄ×æ¸¸Ä¸
-			if (fu != fv) {											//Èç¹û×æ¸¸Ä¸²»Í¬,ÅĞ¶¨Îª Ã»ÓĞÁªÍ¨ ¼ÓÈë¼¯ºÏ
-				father[fu] = fv;									//¸üĞÂ×æ¸¸Ä¸
+			int fu = findfather(u);									//ç¡®è®¤å·¦ç«¯ç‚¹çš„ç¥–çˆ¶æ¯
+			int fv = findfather(v);									//ç¡®è®¤å³ç«¯ç‚¹çš„ç¥–çˆ¶æ¯
+			if (fu != fv) {											//å¦‚æœç¥–çˆ¶æ¯ä¸åŒ,åˆ¤å®šä¸º æ²¡æœ‰è”é€š åŠ å…¥é›†åˆ
+				father[fu] = fv;									//æ›´æ–°ç¥–çˆ¶æ¯
 				res += i.cost;
 				mark++;
-				if (mark == n - 1)break;							//ÒÑ¾­¹¹½¨ºÃÉú³ÉÊ÷ ÍË³ö
+				if (mark == n - 1)break;							//å·²ç»æ„å»ºå¥½ç”Ÿæˆæ ‘ é€€å‡º
 			}
 		}
 		if (mark != n - 1) return 0;
