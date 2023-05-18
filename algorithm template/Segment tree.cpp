@@ -1,61 +1,62 @@
-#include <iostream>
+#define L(u) u << 1														//å½“å‰èŠ‚ç‚¹çš„å·¦å­©å­
+#define R(u) u << 1 | 1													//å½“å‰èŠ‚ç‚¹çš„å³å­©å­
+class Segment_tree {
+private:
+	int n;																//åŸå§‹æ•°æ®é•¿åº¦
+	vector<long long> lazy;												//lazyæ ‡è®°
+	vector<long long> ans;												//åŒºé—´å’Œå€¼ æˆ– å¶å­èŠ‚ç‚¹å€¼														
+	vector <int> arr;													//è¾“å…¥çš„åŸå§‹æ•°æ®
 
-#define L(u) u << 1													//µ±Ç°½ÚµãµÄ×óº¢×Ó
-#define R(u) u << 1 | 1												//µ±Ç°½ÚµãµÄÓÒº¢×Ó
-
-using namespace std;
-
-const int N = 1e5 + 7;
-
-long long lazy[N << 2];												//lazy±ê¼Ç
-long long ans[N << 2];												//Çø¼äºÍÖµ »ò Ò¶×Ó½ÚµãÖµ														
-
-int n, m;															//nÎªÊäÈë¸öÊı mÎª²Ù×÷´ÎÊı
-int arr[N];															//ÊäÈëµÄÔ­Ê¼Êı¾İ
-int op, x, y, k;													//²Ù×÷Ö¸Ê¾Æ÷
-
-void bulid(int u, int l, int r) {									//½¨Á¢Ïß¶ÎÊ÷
-	if (l == r) {													//ËÑË÷µ½Ò¶×Ó½Úµã µ½´ïµİ¹é±ßÔµ
-		ans[u] = arr[r];											//¸³Öµ¸øÒ¶×Ó½Úµã
-		return;
+	void bulid(int u, int l, int r) {									//å»ºç«‹çº¿æ®µæ ‘
+		if (l == r) {													//æœç´¢åˆ°å¶å­èŠ‚ç‚¹ åˆ°è¾¾é€’å½’è¾¹ç¼˜
+			ans[u] = arr[r];											//èµ‹å€¼ç»™å¶å­èŠ‚ç‚¹
+			return;
+		}
+		int mid = (l + r) >> 1;
+		bulid(L(u), l, mid);											//å»ºç«‹å·¦å„¿å­
+		bulid(R(u), mid + 1, r);										//å»ºç«‹å³å„¿å­
+		ans[u] = ans[L(u)] + ans[R(u)];									//èµ‹å€¼çˆ¶äº²èŠ‚ç‚¹çš„åŒºé—´å’Œ
 	}
-	int mid = (l + r) >> 1;
-	bulid(L(u), l, mid);											//½¨Á¢×ó¶ù×Ó
-	bulid(R(u), mid + 1, r);										//½¨Á¢ÓÒ¶ù×Ó
-	ans[u] = ans[L(u)] + ans[R(u)];									//¸³Öµ¸¸Ç×½ÚµãµÄÇø¼äºÍ
-}
 
-
-void pushdown(int u, int l, int r) {								//ÏÂ·Ålazy±ê¼Ç
-	lazy[L(u)] += lazy[u];											//¸üĞÂ×óº¢×Ólazy±ê¼Ç
-	lazy[R(u)] += lazy[u];											//¸üĞÂÓÒº¢×Ólazy±ê¼Ç
-	int mid = (l + r) >> 1;
-	ans[L(u)] += lazy[u] * (long long)(mid - l + 1);				//¸üĞÂ×óº¢×ÓansÖµ
-	ans[R(u)] += lazy[u] * (long long)(r - mid);					//¸üĞÂÓÒº¢×ÓansÖµ
-	lazy[u] = 0;													//Çå³ı¸¸Ç×µÄlazy±ê¼Ç
-}
-
-
-void change(int u, int l, int r, int ll, int rr, long long k) {		//Çø¼äĞŞ¸ÄÏß¶ÎÊ÷
-	if (l >= ll && r <= rr) {										//Èç¹ûµ±Ç°Çø¼ä±»ĞŞ¸ÄÇø¼ä¸²¸Ç
-		ans[u] += k * (long long)(r - l + 1);						//µ±Ç°½ÚµãµÄÇø¼ä+k*Çø¼äÄÚÊıµÄÊıÁ¿
-		lazy[u] += k;												//´òÉÏlazy±ê¼Ç
-		return;
+	void pushdown(int u, int l, int r) {								//ä¸‹æ”¾lazyæ ‡è®°
+		lazy[L(u)] += lazy[u];											//æ›´æ–°å·¦å­©å­lazyæ ‡è®°
+		lazy[R(u)] += lazy[u];											//æ›´æ–°å³å­©å­lazyæ ‡è®°
+		int mid = (l + r) >> 1;
+		ans[L(u)] += lazy[u] * (long long)(mid - l + 1);				//æ›´æ–°å·¦å­©å­anså€¼
+		ans[R(u)] += lazy[u] * (long long)(r - mid);					//æ›´æ–°å³å­©å­anså€¼
+		lazy[u] = 0;													//æ¸…é™¤çˆ¶äº²çš„lazyæ ‡è®°
 	}
-	if (lazy[u] != 0)pushdown(u, l, r);								//Èç¹ûµ±Ç°½ÚµãÓĞlazy±ê¼Ç ÏÂ´«±ê¼Ç
-	int mid = (l + r) >> 1;
-	if (mid >= ll) change(L(u), l, mid, ll, rr, k);					//Èç¹ûÒªĞŞ¸ÄµÄÇø¼äÓë×ó¶ù×ÓÓĞ½»¼¯
-	if (mid < rr) change(R(u), mid + 1, r, ll, rr, k);				//Èç¹ûÒªĞŞ¸ÄµÄÇø¼äÓëÓÒ¶ù×ÓÓĞ½»¼¯
-	ans[u] = ans[L(u)] + ans[R(u)];									//¸üĞÂ¸¸Ç×½ÚµãµÄÇø¼äºÍ
-}
 
+public:
 
-long long ask(int u, int l, int r, int ll, int rr) {				//Çø¼ä²éÑ¯
-	if (l >= ll && r <= rr)return ans[u];							//Èç¹ûµ±Ç°Çø¼ä±»ĞŞ¸ÄÇø¼ä¸²¸Ç
-	long long t = 0;												//ÓÃÓÚºÏ²¢×óÓÒÇø¼ä²éÑ¯µ½µÄÖµ
-	if (lazy[u] != 0)pushdown(u, l, r);								//Èç¹ûµ±Ç°½ÚµãÓĞlazy±ê¼Ç ÏÂ´«±ê¼Ç
-	int mid = (l + r) >> 1;
-	if (mid >= ll)t += ask(L(u), l, mid, ll, rr);					//Èç¹ûÒª²éÑ¯µÄÇø¼äÓë×ó¶ù×ÓÓĞ½»¼¯
-	if (mid < rr)t += ask(R(u), mid + 1, r, ll, rr);				//Èç¹ûÒª²éÑ¯µÄÇø¼äÓëÓÒ¶ù×ÓÓĞ½»¼¯
-	return t;
-}
+	Segment_tree(int len, vector <int>& nums) {
+		n = len;
+		lazy.resize((n << 2) + 1);										//åˆå§‹lazyåŒ–æ•°ç»„
+		ans.resize((n << 2) + 1);										//åˆå§‹åŒ–ansæ•°ç»„
+		arr = move(nums);												//å°†numsèµ‹å€¼ç»™arr
+		bulid(1, 1, n);													//å»ºç«‹çº¿æ®µæ ‘
+	}
+
+	void change(int u, int l, int r, int ll, int rr, long long k) {		//åŒºé—´ä¿®æ”¹çº¿æ®µæ ‘
+		if (l >= ll && r <= rr) {										//å¦‚æœå½“å‰åŒºé—´è¢«ä¿®æ”¹åŒºé—´è¦†ç›–
+			ans[u] += k * (long long)(r - l + 1);						//å½“å‰èŠ‚ç‚¹çš„åŒºé—´+k*åŒºé—´å†…æ•°çš„æ•°é‡
+			lazy[u] += k;												//æ‰“ä¸Šlazyæ ‡è®°
+			return;
+		}
+		if (lazy[u] != 0)pushdown(u, l, r);								//å¦‚æœå½“å‰èŠ‚ç‚¹æœ‰lazyæ ‡è®° ä¸‹ä¼ æ ‡è®°
+		int mid = (l + r) >> 1;
+		if (mid >= ll) change(L(u), l, mid, ll, rr, k);					//å¦‚æœè¦ä¿®æ”¹çš„åŒºé—´ä¸å·¦å„¿å­æœ‰äº¤é›†
+		if (mid < rr) change(R(u), mid + 1, r, ll, rr, k);				//å¦‚æœè¦ä¿®æ”¹çš„åŒºé—´ä¸å³å„¿å­æœ‰äº¤é›†
+		ans[u] = ans[L(u)] + ans[R(u)];									//æ›´æ–°çˆ¶äº²èŠ‚ç‚¹çš„åŒºé—´å’Œ
+	}
+
+	long long ask(int u, int l, int r, int ll, int rr) {				//åŒºé—´æŸ¥è¯¢
+		if (l >= ll && r <= rr)return ans[u];							//å¦‚æœå½“å‰åŒºé—´è¢«ä¿®æ”¹åŒºé—´è¦†ç›–
+		long long t = 0;												//ç”¨äºåˆå¹¶å·¦å³åŒºé—´æŸ¥è¯¢åˆ°çš„å€¼
+		if (lazy[u] != 0)pushdown(u, l, r);								//å¦‚æœå½“å‰èŠ‚ç‚¹æœ‰lazyæ ‡è®° ä¸‹ä¼ æ ‡è®°
+		int mid = (l + r) >> 1;
+		if (mid >= ll)t += ask(L(u), l, mid, ll, rr);					//å¦‚æœè¦æŸ¥è¯¢çš„åŒºé—´ä¸å·¦å„¿å­æœ‰äº¤é›†
+		if (mid < rr)t += ask(R(u), mid + 1, r, ll, rr);				//å¦‚æœè¦æŸ¥è¯¢çš„åŒºé—´ä¸å³å„¿å­æœ‰äº¤é›†
+		return t;
+	}
+};
