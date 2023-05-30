@@ -21,22 +21,27 @@ private:
     double getH(int x, int y) {
         return sqrt((x - fx) * (x - fx) + (y - fy) * (y - fy));
     }
+    //检测点位是否合法
+    bool check_Point(int x, int y) {
+        if (x >= 0 && y >= 0 && x <= fx && y <= fy) return 1;
+        else return 0;
+    }
 public:
     int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
         if (grid[0][0] == 1) return -1;
-        int fx = grid.size() - 1, fy = grid.size() - 1;
+        fx = grid.size() - 1, fy = grid.size() - 1;
         priority_queue<Point, vector <Point>, greater<Point>> pq;     //应该先走那些点离终点更近
-        vector<vector <int>> vis(fx + 1, vector <int>(fx + 1, 0));
+        vector<vector <int>> vis(fx + 1, vector <int>(fx + 1, 0));     //标记当前点位是否走过
         pq.push({ 0 , 0 , 1 , getH(0 , 0) });
         vis[0][0] = 1;
         while (!pq.empty()) {
             Point p = pq.top();
             pq.pop();
-            if (p.x == fx && p.y == fy) return p.g;
+            if (p.x == fx && p.y == fy) return p.g;                      //当前节点为终点
             for (int i = 0; i < 8; i++) {
                 int nx = p.x + DX[i];
                 int ny = p.y + DY[i];
-                if (nx >= 0 && ny >= 0 && nx <= fx && ny <= fy && !vis[nx][ny] && !grid[nx][ny]) {
+                if (check_Point(nx, ny) && !vis[nx][ny] && !grid[nx][ny]) {
                     pq.push({ nx ,ny , p.g + 1 , getH(nx , ny) });
                     vis[nx][ny] = 1;
                 }
