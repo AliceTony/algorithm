@@ -1,73 +1,73 @@
 template <typename key_t, typename val_t>
 class Red_Black_Tree {
 private:
-	//static_assert(is_integral<key_t>::value, "key_t must be an integral type");														//¾²Ì¬¶ÏÑÔ£¬ÓÃÓÚ¼ì²éÄ£°å²ÎÊıÊÇ·ñÂú×ãÒªÇó
-	//static_assert(is_class<val_t>::value, "val_t must be a class type");															//¾²Ì¬¶ÏÑÔ£¬ÓÃÓÚ¼ì²éÄ£°å²ÎÊıÊÇ·ñÂú×ãÒªÇó
-	typedef enum Color_t { RED, BLACK } color_t;						//Ã¶¾ÙÀàĞÍ£¬ºìÉ«Îª0£¬ºÚÉ«Îª1
+	//static_assert(is_integral<key_t>::value, "key_t must be an integral type");														//é™æ€æ–­è¨€ï¼Œç”¨äºæ£€æŸ¥æ¨¡æ¿å‚æ•°æ˜¯å¦æ»¡è¶³è¦æ±‚
+	//static_assert(is_class<val_t>::value, "val_t must be a class type");															//é™æ€æ–­è¨€ï¼Œç”¨äºæ£€æŸ¥æ¨¡æ¿å‚æ•°æ˜¯å¦æ»¡è¶³è¦æ±‚
+	typedef enum Color_t { RED, BLACK } color_t;						//æšä¸¾ç±»å‹ï¼Œçº¢è‰²ä¸º0ï¼Œé»‘è‰²ä¸º1
 	typedef struct Tree_t {
-		key_t key;														//¼üÖµ
-		val_t val;														//Öµ
-		bool color;														//0ÎªºìÉ«£¬1ÎªºÚÉ«
+		key_t key;														//é”®å€¼
+		val_t val;														//å€¼
+		bool color;														//0ä¸ºçº¢è‰²ï¼Œ1ä¸ºé»‘è‰²
 		Tree_t* left, * right, * parent;
-		Tree_t(key_t key, val_t val, color_t color, Tree_t* left, Tree_t* right, Tree_t* parent) : key(key), val(val), color(color), left(left), right(right), parent(parent) {}	//¹¹Ôìº¯Êı
-		Tree_t() : key(), val(), color(BLACK), left(nullptr), right(nullptr), parent(nullptr) {}									//¹¹Ôìº¯Êı
+		Tree_t(key_t key, val_t val, color_t color, Tree_t* left, Tree_t* right, Tree_t* parent) : key(key), val(val), color(color), left(left), right(right), parent(parent) {}	//æ„é€ å‡½æ•°
+		Tree_t() : key(), val(), color(BLACK), left(nullptr), right(nullptr), parent(nullptr) {}									//æ„é€ å‡½æ•°
 	} Tree_t;
-	Tree_t* root = nullptr;												//¸ù½Úµã
-	//×óĞı
+	Tree_t* root = nullptr;												//æ ¹èŠ‚ç‚¹
+	//å·¦æ—‹
 	void rotate_left(Tree_t* tree) {
-		Tree_t* right = tree->right;									//Ö¸Ïòµ±Ç°½ÚµãµÄÓÒ¶ù×Ó
-		if ((tree->right = right->left)) right->left->parent = tree;		//µ±Ç°½ÚµãµÄÓÒ¶ù×ÓÖ¸ÏòÓÒ¶ù×ÓµÄ×ó¶ù×Ó
+		Tree_t* right = tree->right;									//æŒ‡å‘å½“å‰èŠ‚ç‚¹çš„å³å„¿å­
+		if ((tree->right = right->left)) right->left->parent = tree;		//å½“å‰èŠ‚ç‚¹çš„å³å„¿å­æŒ‡å‘å³å„¿å­çš„å·¦å„¿å­
 		right->left = tree;
-		if ((right->parent = tree->parent)) {								//ÓÒ¶ù×ÓµÄ¸¸Ç×Ö¸Ïòµ±Ç°½ÚµãµÄ¸¸Ç×
-			if ((tree == tree->parent->left)) tree->parent->left = right;	//Èç¹ûµ±Ç°½ÚµãÊÇ¸¸Ç×µÄ×ó¶ù×Ó£¬ÄÇÃ´¸¸Ç×µÄ×ó¶ù×ÓÖ¸ÏòÓÒ¶ù×Ó
-			else tree->parent->right = right;							//Èç¹ûµ±Ç°½ÚµãÊÇ¸¸Ç×µÄÓÒ¶ù×Ó£¬ÄÇÃ´¸¸Ç×µÄÓÒ¶ù×ÓÖ¸ÏòÓÒ¶ù×Ó
+		if ((right->parent = tree->parent)) {								//å³å„¿å­çš„çˆ¶äº²æŒ‡å‘å½“å‰èŠ‚ç‚¹çš„çˆ¶äº²
+			if ((tree == tree->parent->left)) tree->parent->left = right;	//å¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯çˆ¶äº²çš„å·¦å„¿å­ï¼Œé‚£ä¹ˆçˆ¶äº²çš„å·¦å„¿å­æŒ‡å‘å³å„¿å­
+			else tree->parent->right = right;							//å¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯çˆ¶äº²çš„å³å„¿å­ï¼Œé‚£ä¹ˆçˆ¶äº²çš„å³å„¿å­æŒ‡å‘å³å„¿å­
 		}
-		else root = right;												//Èç¹ûµ±Ç°½ÚµãÃ»ÓĞ¸¸Ç×£¬ÄÇÃ´ÓÒ¶ù×Ó¾ÍÊÇ¸ù½Úµã
-		tree->parent = right;											//µ±Ç°½ÚµãµÄ¸¸Ç×Ö¸ÏòÓÒ¶ù×Ó
+		else root = right;												//å¦‚æœå½“å‰èŠ‚ç‚¹æ²¡æœ‰çˆ¶äº²ï¼Œé‚£ä¹ˆå³å„¿å­å°±æ˜¯æ ¹èŠ‚ç‚¹
+		tree->parent = right;											//å½“å‰èŠ‚ç‚¹çš„çˆ¶äº²æŒ‡å‘å³å„¿å­
 	}
-	//ÓÒĞı
+	//å³æ—‹
 	void rotate_right(Tree_t* tree) {
-		Tree_t* left = tree->left;										//Ö¸Ïòµ±Ç°½ÚµãµÄ×ó¶ù×Ó
-		if ((tree->left = left->right)) left->right->parent = tree;		//µ±Ç°½ÚµãµÄ×ó¶ù×ÓÖ¸Ïò×ó¶ù×ÓµÄÓÒ¶ù×Ó
+		Tree_t* left = tree->left;										//æŒ‡å‘å½“å‰èŠ‚ç‚¹çš„å·¦å„¿å­
+		if ((tree->left = left->right)) left->right->parent = tree;		//å½“å‰èŠ‚ç‚¹çš„å·¦å„¿å­æŒ‡å‘å·¦å„¿å­çš„å³å„¿å­
 		left->right = tree;
-		if ((left->parent = tree->parent)) {								//×ó¶ù×ÓµÄ¸¸Ç×Ö¸Ïòµ±Ç°½ÚµãµÄ¸¸Ç×
-			if ((tree == tree->parent->left)) tree->parent->left = left;	//Èç¹ûµ±Ç°½ÚµãÊÇ¸¸Ç×µÄ×ó¶ù×Ó£¬ÄÇÃ´¸¸Ç×µÄ×ó¶ù×ÓÖ¸Ïò×ó¶ù×Ó
-			else tree->parent->right = left;							//Èç¹ûµ±Ç°½ÚµãÊÇ¸¸Ç×µÄÓÒ¶ù×Ó£¬ÄÇÃ´¸¸Ç×µÄÓÒ¶ù×ÓÖ¸Ïò×ó¶ù×Ó
+		if ((left->parent = tree->parent)) {								//å·¦å„¿å­çš„çˆ¶äº²æŒ‡å‘å½“å‰èŠ‚ç‚¹çš„çˆ¶äº²
+			if ((tree == tree->parent->left)) tree->parent->left = left;	//å¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯çˆ¶äº²çš„å·¦å„¿å­ï¼Œé‚£ä¹ˆçˆ¶äº²çš„å·¦å„¿å­æŒ‡å‘å·¦å„¿å­
+			else tree->parent->right = left;							//å¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯çˆ¶äº²çš„å³å„¿å­ï¼Œé‚£ä¹ˆçˆ¶äº²çš„å³å„¿å­æŒ‡å‘å·¦å„¿å­
 		}
-		else root = left;												//Èç¹ûµ±Ç°½ÚµãÃ»ÓĞ¸¸Ç×£¬ÄÇÃ´×ó¶ù×Ó¾ÍÊÇ¸ù½Úµã
-		tree->parent = left;											//µ±Ç°½ÚµãµÄ¸¸Ç×Ö¸Ïò×ó¶ù×Ó
+		else root = left;												//å¦‚æœå½“å‰èŠ‚ç‚¹æ²¡æœ‰çˆ¶äº²ï¼Œé‚£ä¹ˆå·¦å„¿å­å°±æ˜¯æ ¹èŠ‚ç‚¹
+		tree->parent = left;											//å½“å‰èŠ‚ç‚¹çš„çˆ¶äº²æŒ‡å‘å·¦å„¿å­
 	}
-	//²åÈëĞŞ¸´
+	//æ’å…¥ä¿®å¤
 	void insert_fix(Tree_t* tree, Tree_t* parent) {
-		if (parent->color == BLACK) return;														//Èç¹û¸¸Ç×ÊÇºÚÉ«£¬ÄÇÃ´²»ĞèÒªĞŞ¸´	
-		Tree_t* grandparent = parent->parent;													//×æ¸¸
-		Tree_t* uncle = grandparent->left == parent ? grandparent->right : grandparent->left;	//ÊåÊå
-		if (uncle && uncle->color == RED) {														//´æÔÚÊåÊå½ÚµãÇÒÊåÊå½ÚµãÎªºìÉ«
+		if (parent->color == BLACK) return;														//å¦‚æœçˆ¶äº²æ˜¯é»‘è‰²ï¼Œé‚£ä¹ˆä¸éœ€è¦ä¿®å¤	
+		Tree_t* grandparent = parent->parent;													//ç¥–çˆ¶
+		Tree_t* uncle = grandparent->left == parent ? grandparent->right : grandparent->left;	//å”å”
+		if (uncle && uncle->color == RED) {														//å­˜åœ¨å”å”èŠ‚ç‚¹ä¸”å”å”èŠ‚ç‚¹ä¸ºçº¢è‰²
 			uncle->color = parent->color = BLACK;
 			grandparent->color = RED;
-			if (grandparent->parent)insert_fix(grandparent, grandparent->parent);				//½«×æ¸¸½Úµãµ±×öĞÂ²åÈëµÄ½Úµã½øĞĞĞŞ¸´
-			else grandparent->color = BLACK;													//×æ¸¸½ÚµãÎª¸ù½Úµã ÑÕÉ«»Ö¸´ÎªºÚÉ«
+			if (grandparent->parent)insert_fix(grandparent, grandparent->parent);				//å°†ç¥–çˆ¶èŠ‚ç‚¹å½“åšæ–°æ’å…¥çš„èŠ‚ç‚¹è¿›è¡Œä¿®å¤
+			else grandparent->color = BLACK;													//ç¥–çˆ¶èŠ‚ç‚¹ä¸ºæ ¹èŠ‚ç‚¹ é¢œè‰²æ¢å¤ä¸ºé»‘è‰²
 		}
-		else if (grandparent->left == parent) {													//¸¸Ç×½ÚµãÊÇ×æ¸¸½ÚµãµÄ×ó¶ù×Ó
-			if (parent->left == tree) {															//LLÇé¿ö È¾É«+ÓÒĞı
+		else if (grandparent->left == parent) {													//çˆ¶äº²èŠ‚ç‚¹æ˜¯ç¥–çˆ¶èŠ‚ç‚¹çš„å·¦å„¿å­
+			if (parent->left == tree) {															//LLæƒ…å†µ æŸ“è‰²+å³æ—‹
 				parent->color = BLACK;
 				grandparent->color = RED;
 				rotate_right(grandparent);
 			}
-			else {																				//LRÇé¿ö È¾É«+×óĞı+ÓÒĞı
+			else {																				//LRæƒ…å†µ æŸ“è‰²+å·¦æ—‹+å³æ—‹
 				grandparent->color = RED;
 				tree->color = BLACK;
 				rotate_left(parent);
 				rotate_right(grandparent);
 			}
 		}
-		else {																					//¸¸Ç×½ÚµãÊÇ×æ¸¸½ÚµãµÄÓÒ¶ù×Ó
-			if (parent->right == tree) {														//RRÇé¿ö È¾É«+×óĞı	
+		else {																					//çˆ¶äº²èŠ‚ç‚¹æ˜¯ç¥–çˆ¶èŠ‚ç‚¹çš„å³å„¿å­
+			if (parent->right == tree) {														//RRæƒ…å†µ æŸ“è‰²+å·¦æ—‹	
 				parent->color = BLACK;
 				grandparent->color = RED;
 				rotate_left(grandparent);
 			}
-			else {																				//RLÇé¿ö È¾É«+ÓÒĞı+×óĞı
+			else {																				//RLæƒ…å†µ æŸ“è‰²+å³æ—‹+å·¦æ—‹
 				grandparent->color = RED;
 				tree->color = BLACK;
 				rotate_right(parent);
@@ -75,34 +75,34 @@ private:
 			}
 		}
 	}
-	//²éÕÒÇ°¼Ì½Úµã
+	//æŸ¥æ‰¾å‰ç»§èŠ‚ç‚¹
 	Tree_t* find_precursor(Tree_t* tree) {
 		Tree_t* left;
 		tree = tree->left;
 		while ((left = tree->right)) tree = left;
 		return tree;
 	}
-	//²éÕÒºó¼Ì½Úµã
+	//æŸ¥æ‰¾åç»§èŠ‚ç‚¹
 	Tree_t* find_successors(Tree_t* tree) {
 		Tree_t* right;
 		tree = tree->right;
-		while ((right = right->left)) tree = right;
+		while ((right = tree->left)) tree = right;
 		return tree;
 	}
-	//½»»»Á½¸ö½Úµã
+	//äº¤æ¢ä¸¤ä¸ªèŠ‚ç‚¹
 	void copy(Tree_t* tree1, Tree_t* tree2) {
 		tree1->key = tree2->key;
 		tree1->val = tree2->val;
 	}
-	//½«ÒªÉ¾³ıµÄ½Úµã×ª»¯ÎªÒ»¸öÒ¶×Ó½Úµã
+	//å°†è¦åˆ é™¤çš„èŠ‚ç‚¹è½¬åŒ–ä¸ºä¸€ä¸ªå¶å­èŠ‚ç‚¹
 	void erase_find(Tree_t* tree) {
-		if (tree->left && tree->right) {								//Èç¹û×óÓÒ¶ù×Ó¶¼´æÔÚ						
-			Tree_t* precursor = find_precursor(tree);					//ÕÒµ½Ç°¼Ì½Úµã
-			copy(tree, precursor);										//½«µ±Ç°½Úµã¸³ÖµÇ°¼Ì½Úµã
+		if (tree->left && tree->right) {								//å¦‚æœå·¦å³å„¿å­éƒ½å­˜åœ¨						
+			Tree_t* precursor = find_precursor(tree);					//æ‰¾åˆ°å‰ç»§èŠ‚ç‚¹
+			copy(tree, precursor);										//å°†å½“å‰èŠ‚ç‚¹èµ‹å€¼å‰ç»§èŠ‚ç‚¹
 			tree = precursor;
 		}
 		Tree_t* child = tree->left ? tree->left : tree->right;
-		if (child) {													//Èç¹û´æÔÚ¶ù×Ó½Úµã Óë¶ù×Ó½Úµã½»»»
+		if (child) {													//å¦‚æœå­˜åœ¨å„¿å­èŠ‚ç‚¹ ä¸å„¿å­èŠ‚ç‚¹äº¤æ¢
 			copy(tree, child);
 			tree = child;
 		}
@@ -112,28 +112,28 @@ private:
 			return;
 		}
 		bool color = tree->color;
-		if (color == BLACK) erase_fix(tree);							//Èç¹ûÉ¾³ı½ÚµãÎªºÚÉ«½øĞĞĞŞ¸´
+		if (color == BLACK) erase_fix(tree);							//å¦‚æœåˆ é™¤èŠ‚ç‚¹ä¸ºé»‘è‰²è¿›è¡Œä¿®å¤
 		Tree_t* parent = tree->parent;
-		parent&& tree == parent->left ? parent->left = nullptr : parent->right = nullptr;	//È¡ÏûÁ´½Óµ±Ç°Öµ
+		parent&& tree == parent->left ? parent->left = nullptr : parent->right = nullptr;	//å–æ¶ˆé“¾æ¥å½“å‰å€¼
 		delete tree;
 	}
-	//É¾³ıºó½øĞĞµ÷Õû
+	//åˆ é™¤åè¿›è¡Œè°ƒæ•´
 	void erase_fix(Tree_t* tree) {
 		Tree_t* parent = tree->parent;
 		Tree_t* brother = parent->left == parent ? parent->right : parent->left;
-		if (brother->color == RED) {										//Èç¹ûĞÖµÜ½ÚµãÑÕÉ«ÎªºìÉ« ½øĞĞ±äÉ« 
+		if (brother->color == RED) {										//å¦‚æœå…„å¼ŸèŠ‚ç‚¹é¢œè‰²ä¸ºçº¢è‰² è¿›è¡Œå˜è‰² 
 			rotate_right(parent);
 			brother->color = BLACK;
 			parent->color = RED;
 			erase_fix(tree);
 		}
-		if (brother->left) {												//Èç¹ûĞÖµÜ½Úµã´æÔÚ×ó×Ó½Úµã ½øĞĞÒ»´Î±äÉ«+ÓÒĞı
+		if (brother->left) {												//å¦‚æœå…„å¼ŸèŠ‚ç‚¹å­˜åœ¨å·¦å­èŠ‚ç‚¹ è¿›è¡Œä¸€æ¬¡å˜è‰²+å³æ—‹
 			brother->color = parent->color;
 			rotate_right(parent);
 			brother->left->color = BLACK;
 			brother->right->color = BLACK;
 		}
-		else if (brother->right) {											//Èç¹ûĞÖµÜ½Úµã´æÔÚÓÒ×Ó½Úµã ½øĞĞÒ»´ÎË«Ğı²¢±äÉ«
+		else if (brother->right) {											//å¦‚æœå…„å¼ŸèŠ‚ç‚¹å­˜åœ¨å³å­èŠ‚ç‚¹ è¿›è¡Œä¸€æ¬¡åŒæ—‹å¹¶å˜è‰²
 			Tree_t* child = brother->right;
 			rotate_left(brother);
 			rotate_right(parent);
@@ -141,31 +141,31 @@ private:
 			child->left->color = BLACK;
 			child->right->color = BLACK;
 		}
-		else if (parent->color == RED) {									//ĞÖµÜ½Úµã²»´æÔÚ×Ó½ÚµãÇÒ¸¸½ÚµãÎªºìÉ« ½øĞĞ±äÉ«
+		else if (parent->color == RED) {									//å…„å¼ŸèŠ‚ç‚¹ä¸å­˜åœ¨å­èŠ‚ç‚¹ä¸”çˆ¶èŠ‚ç‚¹ä¸ºçº¢è‰² è¿›è¡Œå˜è‰²
 			parent->color = BLACK;
 			brother->color = RED;
 		}
-		else {																//¸¸½ÚµãÎªºìÉ« ×ª»¯ÎªºÚÉ« µİ¹é´¦Àí
+		else {																//çˆ¶èŠ‚ç‚¹ä¸ºçº¢è‰² è½¬åŒ–ä¸ºé»‘è‰² é€’å½’å¤„ç†
 			parent->color = BLACK;
 			brother->color = RED;
 			if (parent->parent) erase_fix(parent);
 		}
 	}
 public:
-	//²éÕÒ
+	//æŸ¥æ‰¾
 	Tree_t* find(key_t key) {
 		Tree_t* tree = root;
 		while (tree) {
-			if (key == tree->key) return tree;							//Èç¹ûÕÒµ½ÁË£¬·µ»Øµ±Ç°½Úµã
-			else if (key < tree->key) tree = tree->left;				//Èç¹ûĞ¡ÓÚµ±Ç°½Úµã£¬ÄÇÃ´Íù×ó¶ù×Ó×ß
-			else tree = tree->right;									//Èç¹û´óÓÚµ±Ç°½Úµã£¬ÄÇÃ´ÍùÓÒ¶ù×Ó×ß
+			if (key == tree->key) return tree;							//å¦‚æœæ‰¾åˆ°äº†ï¼Œè¿”å›å½“å‰èŠ‚ç‚¹
+			else if (key < tree->key) tree = tree->left;				//å¦‚æœå°äºå½“å‰èŠ‚ç‚¹ï¼Œé‚£ä¹ˆå¾€å·¦å„¿å­èµ°
+			else tree = tree->right;									//å¦‚æœå¤§äºå½“å‰èŠ‚ç‚¹ï¼Œé‚£ä¹ˆå¾€å³å„¿å­èµ°
 		}
-		return nullptr;													//Èç¹ûÃ»ÓĞÕÒµ½£¬·µ»Ø¿ÕÖ¸Õë
+		return nullptr;													//å¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œè¿”å›ç©ºæŒ‡é’ˆ
 	}
-	//²åÈë½Úµã
+	//æ’å…¥èŠ‚ç‚¹
 	bool insert(key_t key, val_t val) {
-		if (!root) {														//Èç¹û¸ù½ÚµãÎª¿Õ
-			root = new Tree_t(key, val, BLACK, nullptr, nullptr, nullptr);	//¸ù½ÚµãÎªºÚÉ«
+		if (!root) {														//å¦‚æœæ ¹èŠ‚ç‚¹ä¸ºç©º
+			root = new Tree_t(key, val, BLACK, nullptr, nullptr, nullptr);	//æ ¹èŠ‚ç‚¹ä¸ºé»‘è‰²
 			return 1;
 		}
 		Tree_t* parent = root;
@@ -190,7 +190,7 @@ public:
 		}
 		return 0;
 	}
-	//É¾³ı
+	//åˆ é™¤
 	bool erase(key_t key) {
 		Tree_t* tree = find(key);
 		if (!tree) return 0;
